@@ -1,0 +1,379 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="12dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Stock Historical Quotes"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:paddingBottom="8dp" />
+
+    <!-- Search company name -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <EditText
+            android:id="@+id/etSearchName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textSize="14sp"
+            android:hint="@string/search_hint"
+            android:inputType="text"
+            android:singleLine="true" />
+
+        <Button
+            android:id="@+id/btnSearch"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:textSize="14sp"
+            android:textAllCaps="false"
+            android:background="@drawable/btn_rounded"
+            android:minHeight="0dp"
+            android:minWidth="0dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:text="@string/btn_search"
+            android:layout_marginLeft="6dp" />
+    </LinearLayout>
+
+    <!-- Share code (ticker) label + field -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:text="@string/label_share_code"
+            android:textSize="14sp" />
+
+        <EditText
+            android:id="@+id/etTicker"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textSize="14sp"
+            android:hint="@string/ticker_hint"
+            android:inputType="textCapCharacters"
+            android:singleLine="true"
+            android:text="" />
+    </LinearLayout>
+
+    <!-- Start date label + field -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:text="@string/label_start_date"
+            android:textSize="14sp" />
+
+        <EditText
+            android:id="@+id/etStartDate"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textSize="14sp"
+            android:hint="@string/start_date_hint"
+            android:inputType="date"
+            android:focusable="false"
+            android:clickable="true"
+            android:singleLine="true"
+            android:text="" />
+    </LinearLayout>
+
+    <!-- End date label + field -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:text="@string/label_end_date"
+            android:textSize="14sp" />
+
+        <EditText
+            android:id="@+id/etEndDate"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textSize="14sp"
+            android:hint="@string/end_date_hint"
+            android:inputType="date"
+            android:focusable="false"
+            android:clickable="true"
+            android:singleLine="true"
+            android:text="" />
+    </LinearLayout>
+
+    <!-- Current Date + presets 1W / 1M / 3M / 1Y -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="2dp">
+
+        <Button
+            android:id="@+id/btnCurrentDate"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="2"
+            android:text="@string/btn_current_date"
+            android:textSize="12sp"
+            android:textAllCaps="false"
+            android:background="@drawable/btn_rounded"
+            android:minHeight="0dp"
+            android:minWidth="0dp"
+            android:paddingLeft="2dp"
+            android:paddingRight="2dp" />
+
+        <Button
+            android:id="@+id/btnPreset1W"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:layout_marginLeft="3dp"
+            android:text="1W"
+            android:textSize="12sp"
+            android:textAllCaps="false"
+            android:background="@drawable/btn_rounded"
+            android:minHeight="0dp"
+            android:minWidth="0dp" />
+
+        <Button
+            android:id="@+id/btnPreset1M"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:layout_marginLeft="3dp"
+            android:text="1M"
+            android:textSize="12sp"
+            android:textAllCaps="false"
+            android:background="@drawable/btn_rounded"
+            android:minHeight="0dp"
+            android:minWidth="0dp" />
+
+        <Button
+            android:id="@+id/btnPreset3M"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:layout_marginLeft="3dp"
+            android:text="3M"
+            android:textSize="12sp"
+            android:textAllCaps="false"
+            android:background="@drawable/btn_rounded"
+            android:minHeight="0dp"
+            android:minWidth="0dp" />
+
+        <Button
+            android:id="@+id/btnPreset1Y"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:layout_marginLeft="3dp"
+            android:text="1Y"
+            android:textSize="12sp"
+            android:textAllCaps="false"
+            android:background="@drawable/btn_rounded"
+            android:minHeight="0dp"
+            android:minWidth="0dp" />
+    </LinearLayout>
+
+    <!-- Frequency label + spinner -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingTop="4dp">
+
+        <TextView
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:text="@string/label_frequency"
+            android:textSize="14sp" />
+
+        <Spinner
+            android:id="@+id/spFrequency"
+            android:textSize="14sp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+    </LinearLayout>
+
+    <!-- Row 1: Get Data / Clear / Save -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="6dp"
+        android:layout_marginBottom="3dp">
+
+        <Button
+            android:id="@+id/btnGetData"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:text="@string/btn_get_data"
+            android:textSize="14sp"
+            android:textAllCaps="false"
+            android:background="@drawable/btn_rounded"
+            android:paddingLeft="1dp"
+            android:paddingRight="1dp"
+            android:minHeight="0dp"
+            android:minWidth="0dp" />
+
+        <Button
+            android:id="@+id/btnClear"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:layout_marginLeft="3dp"
+            android:text="@string/btn_clear"
+            android:textSize="14sp"
+            android:textAllCaps="false"
+            android:background="@drawable/btn_rounded"
+            android:paddingLeft="1dp"
+            android:paddingRight="1dp"
+            android:minHeight="0dp"
+            android:minWidth="0dp" />
+
+        <Button
+            android:id="@+id/btnSave"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:layout_marginLeft="3dp"
+            android:text="@string/btn_save"
+            android:textSize="14sp"
+            android:textAllCaps="false"
+            android:background="@drawable/btn_rounded"
+            android:paddingLeft="1dp"
+            android:paddingRight="1dp"
+            android:minHeight="0dp"
+            android:minWidth="0dp" />
+    </LinearLayout>
+
+    <!-- Row 2: Share / Analyze / Graph -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="6dp">
+
+        <Button
+            android:id="@+id/btnShare"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:text="@string/btn_share"
+            android:textSize="14sp"
+            android:textAllCaps="false"
+            android:background="@drawable/btn_rounded"
+            android:paddingLeft="1dp"
+            android:paddingRight="1dp"
+            android:minHeight="0dp"
+            android:minWidth="0dp" />
+
+        <Button
+            android:id="@+id/btnAnalyze"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:layout_marginLeft="3dp"
+            android:text="@string/btn_analyze"
+            android:textSize="14sp"
+            android:textAllCaps="false"
+            android:background="@drawable/btn_rounded"
+            android:paddingLeft="1dp"
+            android:paddingRight="1dp"
+            android:minHeight="0dp"
+            android:minWidth="0dp" />
+
+        <Button
+            android:id="@+id/btnGraph"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:layout_marginLeft="3dp"
+            android:text="@string/btn_graph"
+            android:textSize="14sp"
+            android:textAllCaps="false"
+            android:background="@drawable/btn_rounded"
+            android:paddingLeft="1dp"
+            android:paddingRight="1dp"
+            android:minHeight="0dp"
+            android:minWidth="0dp" />
+    </LinearLayout>
+
+<TextView
+        android:id="@+id/tvStatus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textSize="13sp"
+        android:paddingBottom="4dp" />
+
+    <!-- Fixed column header (does not scroll) -->
+    <TextView
+        android:id="@+id/tvHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:typeface="monospace"
+        android:paddingLeft="4dp"
+        android:paddingRight="4dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="2dp" />
+
+    <TextView
+        android:id="@+id/tvHeaderLine"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textSize="14sp"
+        android:typeface="monospace"
+        android:paddingLeft="4dp"
+        android:paddingRight="4dp"
+        android:paddingBottom="2dp" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
+
+        <TextView
+            android:id="@+id/tvResult"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:typeface="monospace"
+            android:textIsSelectable="true"
+            android:padding="4dp" />
+    </ScrollView>
+
+</LinearLayout>

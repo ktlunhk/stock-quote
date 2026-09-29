@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Stock Quotes</string>
+    <string name="ticker_hint">e.g. 1398.HK or AAPL</string>
+    <string name="search_hint">Search name (nvidia / 腾讯 / 格力电器)</string>
+    <string name="start_date_hint">dd/MM/yyyy</string>
+    <string name="end_date_hint">dd/MM/yyyy</string>
+
+    <string name="label_share_code">Share code</string>
+    <string name="label_start_date">Start date</string>
+    <string name="label_end_date">End date</string>
+    <string name="label_frequency">Frequency</string>
+
+    <string name="btn_get_data">Get Data</string>
+    <string name="btn_clear">Clear</string>
+    <string name="btn_current_date">Current Date</string>
+    <string name="btn_save">Save</string>
+    <string name="btn_share">Share</string>
+    <string name="btn_analyze">Analyze</string>
+    <string name="btn_graph">Graph</string>
+    <string name="btn_search">Search</string>
+    <string name="status_loading">Downloading stock data...</string>
+    <string name="status_searching">Searching codes...</string>
+
+    <string-array name="frequency_options">
+        <item>Daily (d)</item>
+        <item>Weekly (w)</item>
+        <item>Monthly (m)</item>
+    </string-array>
+</resources>
