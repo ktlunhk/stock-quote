@@ -327,10 +327,6 @@ public class MainActivity extends Activity {
     }
 
 
-
-
-
-
     // ==================== Styled dialog helpers ====================
 
     private int dp(float v) {
@@ -717,44 +713,7 @@ public class MainActivity extends Activity {
         progressDialog = null;
     }
 
-    /**
-     * Style dialog title: 16sp, bold, black.
-     * Uses setTitle + post-show styling (more reliable than setCustomTitle).
-     */
-    private void styleDialogTitle(AlertDialog dialog) {
-        if (dialog == null) {
-            return;
-        }
-        try {
-            int titleId = getResources().getIdentifier("alertTitle", "id", "android");
-            if (titleId == 0) {
-                titleId = android.R.id.title;
-            }
-            View v = dialog.findViewById(titleId);
-            if (v instanceof TextView) {
-                TextView tv = (TextView) v;
-                tv.setTextSize(android.util.TypedValue.COMPLEX_UNIT_SP, 16);
-                tv.setTypeface(android.graphics.Typeface.DEFAULT_BOLD);
-                tv.setTextColor(0xFF000000);
-            }
-        } catch (Exception e) {
-            // ignore — default title is fine
-        }
-    }
-
-    /** Build title string only; styling applied via styleDialogTitle after show. */
-    private TextView makeDialogTitle(String title) {
-        // kept for compatibility — prefer setTitle + styleDialogTitle
-        int pad = (int) (16 * getResources().getDisplayMetrics().density);
-        TextView titleView = new TextView(this);
-        titleView.setText(title != null ? title : "");
-        titleView.setTextSize(android.util.TypedValue.COMPLEX_UNIT_SP, 16);
-        titleView.setTypeface(android.graphics.Typeface.DEFAULT_BOLD);
-        titleView.setPadding(pad, pad, pad, pad / 2);
-        titleView.setTextColor(0xFF000000);
-        return titleView;
-    }
-
+   
 
 
     /** Set NumberPicker wheel/input text size (sp). Uses reflection for OEM compatibility. */
@@ -890,8 +849,6 @@ public class MainActivity extends Activity {
         Toast.makeText(this, "Data cleared", Toast.LENGTH_SHORT).show();
     }
 
-    // -------------------- Symbol search by company name --------------------
-
     private void startSymbolSearch() {
         String q = etSearchName.getText().toString().trim();
         if (q.length() == 0) {
@@ -903,9 +860,6 @@ public class MainActivity extends Activity {
         new SearchSymbolTask().execute(q);
     }
 
-    /**
-     * One search hit: symbol + display label for the dialog list.
-     */
     private static class SearchHit {
         String symbol;
         String label;
@@ -920,18 +874,6 @@ public class MainActivity extends Activity {
         }
     }
 
-    /** True if a large share of characters are CJK Unified Ideographs */
-
-
-
-    /**
-     * Traditional to Simplified: try web API first, then local char map fallback.
-     * Never blocks search permanently if API is rate-limited.
-     */
-    /**
-     * Traditional to Simplified using OpenCC4j (offline).
-     * Falls back to local char map if library fails.
-     */
     private static String convertTradToSimpApi(String input) {
         if (input == null || input.length() == 0) {
             return input;
@@ -950,7 +892,6 @@ public class MainActivity extends Activity {
         return convertTradToSimpLocal(input);
     }
 
-
     private static boolean containsCjk(String s) {
         for (int i = 0; i < s.length(); i++) {
             char c = s.charAt(i);
@@ -961,12 +902,6 @@ public class MainActivity extends Activity {
         return false;
     }
 
-    /** Web API (apihz). Returns null on failure. */
-
-    /**
-     * Offline Traditional to Simplified for common chars (stock names).
-     * Used when web API fails so search still works.
-     */
     private static String convertTradToSimpLocal(String input) {
         final String TRA =
                 "匯豐鴻產工業銀國電氣機車東區門開關發龍萬與學會務廣報處場態據歷權檢濟營環總聯職華語"
@@ -1199,10 +1134,6 @@ public class MainActivity extends Activity {
             }
         }
 
-        /**
-         * East Money suggest API — supports Chinese company names.
-         * Converts codes to chart ticker format.
-         */
         private void searchEastMoney(String query, ArrayList<SearchHit> hits) {
             int before = hits.size();
             searchEastMoneyOnce(query, hits);
@@ -1308,14 +1239,7 @@ public class MainActivity extends Activity {
                 }
             }
         }
-
-        /**
-         * Map East Money code + market to chart symbol.
-         * HK: 00700 becomes 0700.HK, 09988 becomes 9988.HK
-         * 沪A: 600519 becomes 600519.SS
-         * 深A: 000651 becomes 000651.SZ
-         * US: BABA stays BABA
-         */
+  
         private String eastMoneyToYahoo(String code, String classify, String typeName,
                                        String quoteId, String mktNum) {
             if (code == null || code.length() == 0) {
@@ -1390,12 +1314,6 @@ public class MainActivity extends Activity {
             return null;
         }
 
-
-        /**
-         * Sina HK stock suggest API (type=31).
-         * Response: var name="name,31,code,code,name,...;...";
-         * Prefer Simplified Chinese keywords.
-         */
         private void searchSinaHk(String query, ArrayList<SearchHit> hits) {
             int before = hits.size();
             searchSinaHkOnce(query, hits);
@@ -1517,7 +1435,6 @@ public class MainActivity extends Activity {
             return num + ".HK";
         }
 
-
         /** True if name looks like a real company name (not just a numeric code). */
         private boolean isUsefulCompanyName(String name, String code) {
             if (name == null) {
@@ -1554,9 +1471,6 @@ public class MainActivity extends Activity {
             return true;
         }
 
-        /**
-         * Unified display: 0023.HK — 东亚银行 (港股)
-         */
         private String formatCodeLabel(String ticker, String name, String market) {
             StringBuilder sb = new StringBuilder();
             sb.append(ticker);
@@ -1694,9 +1608,6 @@ public class MainActivity extends Activity {
                 null, null, "Close", null, true, 0.92f, 0f);
     }
 
-
-    // -------------------- Save / Share --------------------
-
     private void saveExcelFile() {
         if (lastCsvContent == null || lastCsvContent.length() == 0) {
             Toast.makeText(this, "No data to save. Get Data first.", Toast.LENGTH_SHORT).show();
@@ -1764,15 +1675,6 @@ public class MainActivity extends Activity {
         }
     }
 
-    // -------------------- Get historical data --------------------
-
-
-    /**
-     * Same logic as Excel VBA AnalyzeData:
-     * Daily return[i] = (Close[i-1] - Close[i]) / Close[i-1]
-     * Average, population StdDev, population Variance.
-     * Shown in a popup dialog.
-     */
     private void analyzeData() {
         ArrayList<Double> closes = lastCloseList;
         if (closes == null || closes.size() < 2) {
@@ -1911,11 +1813,7 @@ public class MainActivity extends Activity {
             }
         }
     }
-
-
-
-
-    // Graph chart geometry (for touch lookup) — shared time axis
+ 
     private int graphChartW = 0;
     private int graphChartH = 0;
     private float graphPadL = 0;
@@ -2241,7 +2139,6 @@ public class MainActivity extends Activity {
         }
     }
 
-
     private Bitmap buildCombinedGraphBitmap() {
         if (graphChartW <= 0) {
             return null;
@@ -2369,8 +2266,6 @@ public class MainActivity extends Activity {
         return bmpCombined;
     }
 
-
-
     private String formatGraphSelectionInfo() {
         if (graphSampleIdx == null || lastCloseList == null || lastCloseList.size() == 0) {
             return "Date: —\nClose: —   Volume: —";
@@ -2398,9 +2293,6 @@ public class MainActivity extends Activity {
                 + "\nClose: " + String.format(Locale.US, "%.2f", close)
                 + "   Volume: " + String.format(Locale.US, "%.0f", vol);
     }
-
-
-
 
     private int[] buildSampleIndices(int n, int maxPoints) {
         // Always include first, last, and min/max of Close & Volume so scale fits the drawn line
@@ -2455,8 +2347,6 @@ public class MainActivity extends Activity {
         set.add(Integer.valueOf(maxI));
     }
 
-
-
     private void updateGraphSelection(float touchX, int viewWidth) {
         if (lastCloseList == null || lastCloseList.size() == 0 || graphSampleIdx == null) {
             return;
@@ -2499,10 +2389,6 @@ public class MainActivity extends Activity {
         }
     }
 
-    private void showGraphPointInfo(float touchX, int viewWidth) {
-        updateGraphSelection(touchX, viewWidth);
-    }
-
     private void saveGraphBitmap(Bitmap bmp) {
         if (bmp == null) {
             return;
@@ -2536,9 +2422,6 @@ public class MainActivity extends Activity {
         }
     }
 
-    /**
-     * Share via MediaStore content:// URI (avoids file:// exposure error on Android 7+).
-     */
     private void shareGraphBitmap(Bitmap bmp) {
         if (bmp == null) {
             return;
@@ -2586,9 +2469,7 @@ public class MainActivity extends Activity {
             Toast.makeText(this, "Share failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
-
-
-    /** Simple SMA for index i with period (needs i >= period-1). */
+ 
     private double smaAt(ArrayList values, int i, int period) {
         if (i < period - 1 || values == null) {
             return Double.NaN;
@@ -2612,7 +2493,6 @@ public class MainActivity extends Activity {
         return Math.sqrt(sum / period);
     }
 
-    /** RSI(14) array, NaN where undefined. */
     private double[] computeRsi(ArrayList values, int period) {
         int n = values == null ? 0 : values.size();
         double[] rsi = new double[n];
@@ -2751,9 +2631,7 @@ public class MainActivity extends Activity {
         canvas.drawText("RSI", left + 4, top - 2, textPaint);
         return bmp;
     }
-
-
-    /** EMA series; seed with SMA of first period values. */
+    
     private double[] computeEma(ArrayList values, int period) {
         int n = values == null ? 0 : values.size();
         double[] ema = new double[n];
@@ -2776,10 +2654,6 @@ public class MainActivity extends Activity {
         return ema;
     }
 
-    /**
-     * MACD(12,26,9): dif[], dea[], hist[] parallel to closes.
-     * hist = dif - dea.
-     */
     private void computeMacd(ArrayList values, double[] dif, double[] dea, double[] hist) {
         int n = values == null ? 0 : values.size();
         for (int i = 0; i < n; i++) {
@@ -2948,7 +2822,6 @@ public class MainActivity extends Activity {
             }
         }
 
-        // DIF and DEA lines
         Paint difP = new Paint();
         difP.setColor(0xFF1565C0);
         difP.setStrokeWidth(2f);
