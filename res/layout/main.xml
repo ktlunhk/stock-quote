@@ -3,386 +3,529 @@
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	android:orientation="vertical">
+	android:orientation="vertical"
+	android:background="@color/page_bg">
 
+	<!-- App bar -->
 	<TextView
 		android:layout_width="match_parent"
-		android:layout_height="40dp"
+		android:layout_height="52dp"
 		android:text="@string/app_name"
 		android:textSize="20sp"
-		android:textColor="#FFFFFF"
-		android:background="#0000FF"
+		android:textStyle="bold"
+		android:textColor="#FFFFFFFF"
+		android:background="@drawable/header_bg"
 		android:gravity="left|center_vertical"
-		android:paddingLeft="10dp"/>
+		android:paddingLeft="16dp"/>
 
 	<LinearLayout
 		android:layout_width="match_parent"
-		android:layout_height="match_parent"
+		android:layout_height="0dp"
+		android:layout_weight="1"
 		android:orientation="vertical"
-		android:padding="10dp">
+		android:paddingLeft="10dp"
+		android:paddingRight="10dp"
+		android:paddingTop="10dp"
+		android:paddingBottom="10dp">
 
+	<!-- Input card -->
 	<LinearLayout
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:orientation="horizontal"
-		android:gravity="center_vertical">
+		android:orientation="vertical"
+		android:background="@drawable/card_bg"
+		android:padding="12dp">
 
-		<EditText
-			android:id="@+id/etSearchName"
-			android:layout_width="0dp"
+		<LinearLayout
+			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:layout_weight="1"
-			android:textSize="14sp"
-			android:hint="@string/search_hint"
-			android:inputType="text"
-			android:singleLine="true"/>
+			android:orientation="horizontal"
+			android:gravity="center_vertical">
+
+			<EditText
+				android:id="@+id/etSearchName"
+				android:layout_width="0dp"
+				android:layout_height="44dp"
+				android:layout_weight="1"
+				android:background="@drawable/input_bg"
+				android:paddingLeft="10dp"
+				android:paddingRight="10dp"
+				android:textSize="14sp"
+				android:textColor="@color/text_primary"
+				android:textColorHint="#FF9AA1B2"
+				android:hint="@string/search_hint"
+				android:inputType="text"
+				android:singleLine="true"/>
 
 		<Button
 			android:id="@+id/btnSearch"
 			android:layout_width="wrap_content"
-			android:layout_height="40dp"
+			android:layout_height="44dp"
+			
+			android:layout_marginLeft="8dp"
+			android:text="@string/btn_search"
 			android:textSize="14sp"
+			android:textStyle="bold"
+			android:textColor="#FFFFFFFF"
 			android:textAllCaps="false"
-			android:background="@drawable/btn_rounded"
+			android:background="@drawable/btn_primary"
 			android:minHeight="0dp"
 			android:minWidth="0dp"
-			android:paddingLeft="16dp"
-			android:paddingRight="16dp"
-			android:text="@string/btn_search"
-			android:layout_marginLeft="6dp"/>
+			android:paddingLeft="18dp"
+			android:paddingRight="18dp"/>
 
-	</LinearLayout>
+		</LinearLayout>
 
-	<LinearLayout
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:orientation="horizontal"
-		android:gravity="center_vertical">
-
-		<TextView
-			android:layout_width="100dp"
+		<LinearLayout
+			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:text="@string/label_share_code"
-			android:textSize="14sp"/>
+			android:orientation="horizontal"
+			android:gravity="center_vertical"
+			android:layout_marginTop="10dp">
 
-		<EditText
-			android:id="@+id/etTicker"
-			android:layout_width="0dp"
+			<TextView
+				android:layout_width="86dp"
+				android:layout_height="wrap_content"
+				android:text="@string/label_share_code"
+				android:textSize="13sp"
+				android:textStyle="bold"
+				android:textColor="@color/text_secondary"/>
+
+			<EditText
+				android:id="@+id/etTicker"
+				android:layout_width="0dp"
+				android:layout_height="44dp"
+				android:layout_weight="1"
+				android:background="@drawable/input_bg"
+				android:paddingLeft="10dp"
+				android:paddingRight="10dp"
+				android:textSize="15sp"
+				android:textColor="@color/text_primary"
+				android:textColorHint="#FF9AA1B2"
+				android:hint="@string/ticker_hint"
+				android:singleLine="true"
+				android:inputType="textCapCharacters"
+				android:text=""/>
+
+		</LinearLayout>
+
+
+		<LinearLayout
+			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:layout_weight="1"
-			android:textSize="14sp"
-			android:hint="@string/ticker_hint"
-			android:inputType="textCapCharacters"
-			android:singleLine="true"
-			android:text=""/>
+			android:orientation="horizontal"
+			android:gravity="center_vertical"
+			android:layout_marginTop="8dp">
 
-	</LinearLayout>
+			<TextView
+				android:layout_width="86dp"
+				android:layout_height="wrap_content"
+				android:text="@string/label_start_date"
+				android:textSize="13sp"
+				android:textStyle="bold"
+				android:textColor="@color/text_secondary"/>
 
-	<LinearLayout
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:orientation="horizontal"
-		android:gravity="center_vertical">
+			<EditText
+				android:id="@+id/etStartDate"
+				android:layout_width="0dp"
+				android:layout_height="44dp"
+				android:layout_weight="1"
+				android:background="@drawable/input_bg"
+				android:paddingLeft="10dp"
+				android:paddingRight="10dp"
+				android:textSize="15sp"
+				android:textColor="@color/text_primary"
+				android:textColorHint="#FF9AA1B2"
+				android:hint="@string/start_date_hint"
+				android:singleLine="true"
+				android:inputType="date"
+				android:focusable="false"
+				android:clickable="true"
+				android:text=""/>
 
-		<TextView
-			android:layout_width="100dp"
+		</LinearLayout>
+
+
+		<LinearLayout
+			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:text="@string/label_start_date"
-			android:textSize="14sp"/>
+			android:orientation="horizontal"
+			android:gravity="center_vertical"
+			android:layout_marginTop="8dp">
 
-		<EditText
-			android:id="@+id/etStartDate"
-			android:layout_width="0dp"
+			<TextView
+				android:layout_width="86dp"
+				android:layout_height="wrap_content"
+				android:text="@string/label_end_date"
+				android:textSize="13sp"
+				android:textStyle="bold"
+				android:textColor="@color/text_secondary"/>
+
+			<EditText
+				android:id="@+id/etEndDate"
+				android:layout_width="0dp"
+				android:layout_height="44dp"
+				android:layout_weight="1"
+				android:background="@drawable/input_bg"
+				android:paddingLeft="10dp"
+				android:paddingRight="10dp"
+				android:textSize="15sp"
+				android:textColor="@color/text_primary"
+				android:textColorHint="#FF9AA1B2"
+				android:hint="@string/end_date_hint"
+				android:singleLine="true"
+				android:inputType="date"
+				android:focusable="false"
+				android:clickable="true"
+				android:text=""/>
+
+		</LinearLayout>
+
+
+		<!-- Quick range presets -->
+		<LinearLayout
+			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:layout_weight="1"
-			android:textSize="14sp"
-			android:hint="@string/start_date_hint"
-			android:inputType="date"
-			android:focusable="false"
-			android:clickable="true"
-			android:singleLine="true"
-			android:text=""/>
-
-	</LinearLayout>
-
-	<LinearLayout
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:orientation="horizontal"
-		android:gravity="center_vertical">
-
-		<TextView
-			android:layout_width="100dp"
-			android:layout_height="wrap_content"
-			android:text="@string/label_end_date"
-			android:textSize="14sp"/>
-
-		<EditText
-			android:id="@+id/etEndDate"
-			android:layout_width="0dp"
-			android:layout_height="wrap_content"
-			android:layout_weight="1"
-			android:textSize="14sp"
-			android:hint="@string/end_date_hint"
-			android:inputType="date"
-			android:focusable="false"
-			android:clickable="true"
-			android:singleLine="true"
-			android:text=""/>
-
-	</LinearLayout>
-
-	<LinearLayout
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:orientation="horizontal"
-		android:layout_marginTop="2dp"
-		android:layout_marginBottom="2dp">
+			android:orientation="horizontal"
+			android:layout_marginTop="10dp">
 
 		<Button
 			android:id="@+id/btnCurrentDate"
 			android:layout_width="0dp"
-			android:layout_height="40dp"
+			android:layout_height="38dp"
 			android:layout_weight="2"
+			android:layout_marginLeft="0dp"
 			android:text="@string/btn_current_date"
 			android:textSize="12sp"
+			android:textStyle="normal"
+			android:textColor="@color/text_primary"
 			android:textAllCaps="false"
 			android:background="@drawable/btn_rounded"
 			android:minHeight="0dp"
 			android:minWidth="0dp"
-			android:paddingLeft="2dp"
-			android:paddingRight="2dp"/>
+			android:paddingLeft="4dp"
+			android:paddingRight="4dp"/>
 
 		<Button
 			android:id="@+id/btnPreset1W"
 			android:layout_width="0dp"
-			android:layout_height="40dp"
+			android:layout_height="38dp"
 			android:layout_weight="1"
-			android:layout_marginLeft="3dp"
+			android:layout_marginLeft="6dp"
 			android:text="1W"
 			android:textSize="12sp"
+			android:textStyle="normal"
+			android:textColor="@color/text_primary"
 			android:textAllCaps="false"
 			android:background="@drawable/btn_rounded"
 			android:minHeight="0dp"
-			android:minWidth="0dp"/>
+			android:minWidth="0dp"
+			android:paddingLeft="4dp"
+			android:paddingRight="4dp"/>
 
 		<Button
 			android:id="@+id/btnPreset1M"
 			android:layout_width="0dp"
-			android:layout_height="40dp"
+			android:layout_height="38dp"
 			android:layout_weight="1"
-			android:layout_marginLeft="3dp"
+			android:layout_marginLeft="6dp"
 			android:text="1M"
 			android:textSize="12sp"
+			android:textStyle="normal"
+			android:textColor="@color/text_primary"
 			android:textAllCaps="false"
 			android:background="@drawable/btn_rounded"
 			android:minHeight="0dp"
-			android:minWidth="0dp"/>
+			android:minWidth="0dp"
+			android:paddingLeft="4dp"
+			android:paddingRight="4dp"/>
 
 		<Button
 			android:id="@+id/btnPreset3M"
 			android:layout_width="0dp"
-			android:layout_height="40dp"
+			android:layout_height="38dp"
 			android:layout_weight="1"
-			android:layout_marginLeft="3dp"
+			android:layout_marginLeft="6dp"
 			android:text="3M"
 			android:textSize="12sp"
+			android:textStyle="normal"
+			android:textColor="@color/text_primary"
 			android:textAllCaps="false"
 			android:background="@drawable/btn_rounded"
 			android:minHeight="0dp"
-			android:minWidth="0dp"/>
+			android:minWidth="0dp"
+			android:paddingLeft="4dp"
+			android:paddingRight="4dp"/>
 
 		<Button
 			android:id="@+id/btnPreset1Y"
 			android:layout_width="0dp"
-			android:layout_height="40dp"
+			android:layout_height="38dp"
 			android:layout_weight="1"
-			android:layout_marginLeft="3dp"
+			android:layout_marginLeft="6dp"
 			android:text="1Y"
 			android:textSize="12sp"
+			android:textStyle="normal"
+			android:textColor="@color/text_primary"
 			android:textAllCaps="false"
 			android:background="@drawable/btn_rounded"
 			android:minHeight="0dp"
-			android:minWidth="0dp"/>
+			android:minWidth="0dp"
+			android:paddingLeft="4dp"
+			android:paddingRight="4dp"/>
 
-	</LinearLayout>
+		</LinearLayout>
 
-	<LinearLayout
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:orientation="horizontal"
-		android:gravity="center_vertical"
-		android:paddingTop="4dp">
-
-		<TextView
-			android:layout_width="100dp"
+		<LinearLayout
+			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:text="@string/label_frequency"
-			android:textSize="14sp"/>
+			android:orientation="horizontal"
+			android:gravity="center_vertical"
+			android:layout_marginTop="10dp">
 
-		<Spinner
-			android:id="@+id/spFrequency"
-			android:textSize="14sp"
-			android:layout_width="0dp"
+			<TextView
+				android:layout_width="86dp"
+				android:layout_height="wrap_content"
+				android:text="@string/label_frequency"
+				android:textSize="13sp"
+				android:textStyle="bold"
+				android:textColor="@color/text_secondary"/>
+
+			<FrameLayout
+				android:layout_width="0dp"
+				android:layout_height="44dp"
+				android:layout_weight="1"
+				android:background="@drawable/input_bg">
+
+				<Spinner
+					android:id="@+id/spFrequency"
+					android:layout_width="match_parent"
+					android:layout_height="match_parent"
+					android:background="@null"/>
+
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_gravity="right|center_vertical"
+					android:layout_marginRight="12dp"
+					android:text="&#9662;"
+					android:textSize="16sp"
+					android:textColor="@color/text_secondary"/>
+
+			</FrameLayout>
+
+		</LinearLayout>
+
+		<!-- Actions -->
+		<LinearLayout
+			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:layout_weight="1"/>
-
-	</LinearLayout>
-
-	<LinearLayout
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:orientation="horizontal"
-		android:layout_marginTop="6dp"
-		android:layout_marginBottom="3dp">
+			android:orientation="horizontal"
+			android:layout_marginTop="12dp">
 
 		<Button
 			android:id="@+id/btnGetData"
 			android:layout_width="0dp"
-			android:layout_height="40dp"
-			android:layout_weight="1"
+			android:layout_height="46dp"
+			android:layout_weight="2"
+			android:layout_marginLeft="0dp"
 			android:text="@string/btn_get_data"
-			android:textSize="14sp"
+			android:textSize="15sp"
+			android:textStyle="bold"
+			android:textColor="#FFFFFFFF"
 			android:textAllCaps="false"
-			android:background="@drawable/btn_rounded"
-			android:paddingLeft="1dp"
-			android:paddingRight="1dp"
+			android:background="@drawable/btn_primary"
 			android:minHeight="0dp"
-			android:minWidth="0dp"/>
+			android:minWidth="0dp"
+			android:paddingLeft="4dp"
+			android:paddingRight="4dp"/>
 
 		<Button
 			android:id="@+id/btnClear"
 			android:layout_width="0dp"
-			android:layout_height="40dp"
+			android:layout_height="46dp"
 			android:layout_weight="1"
-			android:layout_marginLeft="3dp"
+			android:layout_marginLeft="6dp"
 			android:text="@string/btn_clear"
 			android:textSize="14sp"
+			android:textStyle="normal"
+			android:textColor="@color/text_primary"
 			android:textAllCaps="false"
 			android:background="@drawable/btn_rounded"
-			android:paddingLeft="1dp"
-			android:paddingRight="1dp"
 			android:minHeight="0dp"
-			android:minWidth="0dp"/>
+			android:minWidth="0dp"
+			android:paddingLeft="4dp"
+			android:paddingRight="4dp"/>
+
+		</LinearLayout>
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="horizontal"
+			android:layout_marginTop="6dp">
 
 		<Button
 			android:id="@+id/btnSave"
 			android:layout_width="0dp"
 			android:layout_height="40dp"
 			android:layout_weight="1"
-			android:layout_marginLeft="3dp"
+			android:layout_marginLeft="0dp"
 			android:text="@string/btn_save"
-			android:textSize="14sp"
+			android:textSize="13sp"
+			android:textStyle="normal"
+			android:textColor="@color/text_primary"
 			android:textAllCaps="false"
 			android:background="@drawable/btn_rounded"
-			android:paddingLeft="1dp"
-			android:paddingRight="1dp"
 			android:minHeight="0dp"
-			android:minWidth="0dp"/>
-
-	</LinearLayout>
-
-	<LinearLayout
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:orientation="horizontal"
-		android:layout_marginBottom="6dp">
+			android:minWidth="0dp"
+			android:paddingLeft="4dp"
+			android:paddingRight="4dp"/>
 
 		<Button
 			android:id="@+id/btnShare"
 			android:layout_width="0dp"
 			android:layout_height="40dp"
 			android:layout_weight="1"
+			android:layout_marginLeft="6dp"
 			android:text="@string/btn_share"
-			android:textSize="14sp"
+			android:textSize="13sp"
+			android:textStyle="normal"
+			android:textColor="@color/text_primary"
 			android:textAllCaps="false"
 			android:background="@drawable/btn_rounded"
-			android:paddingLeft="1dp"
-			android:paddingRight="1dp"
 			android:minHeight="0dp"
-			android:minWidth="0dp"/>
+			android:minWidth="0dp"
+			android:paddingLeft="4dp"
+			android:paddingRight="4dp"/>
 
 		<Button
 			android:id="@+id/btnAnalyze"
 			android:layout_width="0dp"
 			android:layout_height="40dp"
 			android:layout_weight="1"
-			android:layout_marginLeft="3dp"
+			android:layout_marginLeft="6dp"
 			android:text="@string/btn_analyze"
-			android:textSize="14sp"
+			android:textSize="13sp"
+			android:textStyle="normal"
+			android:textColor="@color/text_primary"
 			android:textAllCaps="false"
 			android:background="@drawable/btn_rounded"
-			android:paddingLeft="1dp"
-			android:paddingRight="1dp"
 			android:minHeight="0dp"
-			android:minWidth="0dp"/>
+			android:minWidth="0dp"
+			android:paddingLeft="4dp"
+			android:paddingRight="4dp"/>
 
 		<Button
 			android:id="@+id/btnGraph"
 			android:layout_width="0dp"
 			android:layout_height="40dp"
 			android:layout_weight="1"
-			android:layout_marginLeft="3dp"
+			android:layout_marginLeft="6dp"
 			android:text="@string/btn_graph"
-			android:textSize="14sp"
+			android:textSize="13sp"
+			android:textStyle="normal"
+			android:textColor="@color/text_primary"
 			android:textAllCaps="false"
 			android:background="@drawable/btn_rounded"
-			android:paddingLeft="1dp"
-			android:paddingRight="1dp"
 			android:minHeight="0dp"
-			android:minWidth="0dp"/>
+			android:minWidth="0dp"
+			android:paddingLeft="4dp"
+			android:paddingRight="4dp"/>
+
+		</LinearLayout>
 
 	</LinearLayout>
 
+	<!-- Status -->
 	<TextView
 		android:id="@+id/tvStatus"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:text=""
 		android:textSize="13sp"
-		android:paddingBottom="4dp"/>
+		android:textColor="@color/accent_pressed"
+		android:paddingLeft="6dp"
+		android:paddingRight="6dp"
+		android:paddingTop="8dp"
+		android:paddingBottom="6dp"/>
 
-	<TextView
-		android:id="@+id/tvHeader"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:text=""
-		android:textSize="14sp"
-		android:textStyle="bold"
-		android:typeface="monospace"
-		android:paddingLeft="4dp"
-		android:paddingRight="4dp"
-		android:paddingTop="4dp"
-		android:paddingBottom="2dp"/>
-
-	<TextView
-		android:id="@+id/tvHeaderLine"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:text=""
-		android:textSize="14sp"
-		android:typeface="monospace"
-		android:paddingLeft="4dp"
-		android:paddingRight="4dp"
-		android:paddingBottom="2dp"/>
-
-	<ScrollView
+	<!-- Result card: header stays fixed, rows scroll; whole table scrolls sideways -->
+	<LinearLayout
 		android:layout_width="match_parent"
 		android:layout_height="0dp"
 		android:layout_weight="1"
-		android:fillViewport="true">
+		android:orientation="vertical"
+		android:background="@drawable/card_bg"
+		android:padding="1dp">
 
-		<TextView
-			android:id="@+id/tvResult"
+		<HorizontalScrollView
 			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:textSize="14sp"
-			android:typeface="monospace"
-			android:textIsSelectable="true"
-			android:padding="4dp"/>
+			android:layout_height="match_parent"
+			android:fillViewport="true"
+			android:scrollbars="none">
 
-	</ScrollView>
+			<LinearLayout
+				android:layout_width="wrap_content"
+				android:layout_height="match_parent"
+				android:minWidth="320dp"
+				android:orientation="vertical">
 
-</LinearLayout>
+				<TextView
+					android:id="@+id/tvHeader"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:text=""
+					android:textSize="12sp"
+					android:textStyle="bold"
+					android:textColor="@color/primary"
+					android:typeface="monospace"
+					android:background="@drawable/table_header_top_bg"
+					android:paddingLeft="8dp"
+					android:paddingRight="8dp"
+					android:paddingTop="8dp"
+					android:paddingBottom="4dp"/>
+
+				<TextView
+					android:id="@+id/tvHeaderLine"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:text=""
+					android:textSize="12sp"
+					android:textColor="@color/primary"
+					android:typeface="monospace"
+					android:background="@drawable/table_header_bg"
+					android:paddingLeft="8dp"
+					android:paddingRight="8dp"
+					android:paddingBottom="4dp"/>
+
+				<ScrollView
+					android:layout_width="wrap_content"
+					android:layout_height="0dp"
+					android:layout_weight="1"
+					android:fillViewport="true">
+
+					<TextView
+						android:id="@+id/tvResult"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:textSize="12sp"
+						android:textColor="@color/text_primary"
+						android:typeface="monospace"
+						android:textIsSelectable="true"
+						android:paddingLeft="8dp"
+						android:paddingRight="8dp"
+						android:paddingTop="6dp"
+						android:paddingBottom="6dp"/>
+
+				</ScrollView>
+
+			</LinearLayout>
+
+		</HorizontalScrollView>
+
+	</LinearLayout>
+
+	</LinearLayout>
 
 </LinearLayout>
