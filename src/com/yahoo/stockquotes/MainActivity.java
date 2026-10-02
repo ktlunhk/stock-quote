@@ -3,6 +3,7 @@ package com.yahoo.stockquotes;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Build;
@@ -14,6 +15,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.FrameLayout;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.DatePicker;
@@ -81,7 +83,7 @@ public class MainActivity extends Activity {
     private TextView tvHeaderLine;
     private TextView tvResult;
 
-    private AlertDialog progressDialog;
+    private Dialog progressDialog;
     private AsyncTask currentTask = null;
 
     private Calendar calStart;
@@ -119,6 +121,25 @@ public class MainActivity extends Activity {
         tvStatus = (TextView) findViewById(R.id.tvStatus);
         tvHeader = (TextView) findViewById(R.id.tvHeader);
         tvHeaderLine = (TextView) findViewById(R.id.tvHeaderLine);
+        // Hide the tinted header strip while the table is empty
+        tvHeader.setVisibility(View.GONE);
+        tvHeaderLine.setVisibility(View.GONE);
+        tvHeader.addTextChangedListener(new android.text.TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence cs, int a, int b, int c) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence cs, int a, int b, int c) {
+            }
+
+            @Override
+            public void afterTextChanged(android.text.Editable e) {
+                int vis = (e == null || e.length() == 0) ? View.GONE : View.VISIBLE;
+                tvHeader.setVisibility(vis);
+                tvHeaderLine.setVisibility(vis);
+            }
+        });
         tvResult = (TextView) findViewById(R.id.tvResult);
 
         calStart = Calendar.getInstance();
@@ -309,6 +330,222 @@ public class MainActivity extends Activity {
 
 
 
+
+    // ==================== Styled dialog helpers ====================
+
+    private int dp(float v) {
+        return (int) (v * getResources().getDisplayMetrics().density + 0.5f);
+    }
+
+    private android.graphics.drawable.GradientDrawable roundRect(int color, float radiusDp) {
+        android.graphics.drawable.GradientDrawable g =
+                new android.graphics.drawable.GradientDrawable();
+        g.setShape(android.graphics.drawable.GradientDrawable.RECTANGLE);
+        g.setColor(color);
+        g.setCornerRadius(dp(radiusDp));
+        return g;
+    }
+
+    private Button makeDialogButton(String text, boolean primary) {
+        Button b = new Button(this);
+        b.setText(text);
+        b.setTextSize(android.util.TypedValue.COMPLEX_UNIT_SP, 15);
+        b.setTypeface(android.graphics.Typeface.DEFAULT_BOLD);
+        b.setTextColor(primary ? 0xFFFFFFFF : 0xFF1F2430);
+        try {
+            b.setAllCaps(false);
+        } catch (Throwable t) {
+            // ignore
+        }
+        b.setBackgroundResource(primary ? R.drawable.btn_primary : R.drawable.btn_rounded);
+        b.setMinHeight(0);
+        b.setMinimumHeight(0);
+        b.setMinWidth(0);
+        b.setMinimumWidth(0);
+        b.setPadding(dp(12), 0, dp(12), 0);
+        return b;
+    }
+
+    /**
+     * App-styled dialog: rounded white card, gradient title bar (same as app bar),
+     * body view, and rounded Cancel / OK style buttons.
+     * wFrac: window width as fraction of screen; hFrac: height fraction (0 = wrap content).
+     */
+    private Dialog showStyledDialog(String title, View body,
+                                    String posText, final Runnable onPos,
+                                    String negText, final Runnable onNeg,
+                                    boolean cancelable, float wFrac, float hFrac) {
+        final Dialog dlg = new Dialog(this);
+        dlg.requestWindowFeature(android.view.Window.FEATURE_NO_TITLE);
+
+        float r = 18f;
+        LinearLayout root = new LinearLayout(this);
+        root.setOrientation(LinearLayout.VERTICAL);
+        root.setBackgroundDrawable(roundRect(0xFFFFFFFF, r));
+
+        // Title bar
+        TextView tvTitle = new TextView(this);
+        tvTitle.setText(title != null ? title : "");
+        tvTitle.setTextSize(android.util.TypedValue.COMPLEX_UNIT_SP, 18);
+        tvTitle.setTypeface(android.graphics.Typeface.DEFAULT_BOLD);
+        tvTitle.setTextColor(0xFFFFFFFF);
+        tvTitle.setSingleLine(true);
+        tvTitle.setEllipsize(android.text.TextUtils.TruncateAt.END);
+        tvTitle.setGravity(android.view.Gravity.CENTER_VERTICAL);
+        tvTitle.setPadding(dp(20), dp(14), dp(20), dp(14));
+        float rr = dp(r);
+        android.graphics.drawable.GradientDrawable titleBg =
+                new android.graphics.drawable.GradientDrawable(
+                        android.graphics.drawable.GradientDrawable.Orientation.LEFT_RIGHT,
+                        new int[] { 0xFF0D1452, 0xFF1A237E });
+        titleBg.setCornerRadii(new float[] { rr, rr, rr, rr, 0, 0, 0, 0 });
+        tvTitle.setBackgroundDrawable(titleBg);
+        root.addView(tvTitle, new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT));
+
+        // Body (shrinks when the screen is short, expands for fixed-height dialogs)
+        FrameLayout bodyHolder = new FrameLayout(this);
+        bodyHolder.addView(body, new FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT,
+                FrameLayout.LayoutParams.WRAP_CONTENT));
+        root.addView(bodyHolder, new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, 0, 1f));
+        ((LinearLayout.LayoutParams) bodyHolder.getLayoutParams()).height =
+                LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        // Buttons
+        if (posText != null || negText != null) {
+            LinearLayout btnRow = new LinearLayout(this);
+            btnRow.setOrientation(LinearLayout.HORIZONTAL);
+            btnRow.setPadding(dp(14), dp(10), dp(14), dp(14));
+
+            if (negText != null) {
+                Button bn = makeDialogButton(negText, false);
+                bn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dlg.dismiss();
+                        if (onNeg != null) {
+                            onNeg.run();
+                        }
+                    }
+                });
+                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(0, dp(44), 1f);
+                btnRow.addView(bn, lp);
+            }
+            if (posText != null) {
+                Button bp = makeDialogButton(posText, true);
+                bp.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dlg.dismiss();
+                        if (onPos != null) {
+                            onPos.run();
+                        }
+                    }
+                });
+                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(0, dp(44), 1f);
+                if (negText != null) {
+                    lp.leftMargin = dp(10);
+                }
+                btnRow.addView(bp, lp);
+            }
+            root.addView(btnRow, new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT));
+        }
+
+        dlg.setContentView(root);
+        dlg.setCancelable(cancelable);
+        dlg.setCanceledOnTouchOutside(cancelable);
+        try {
+            dlg.getWindow().setBackgroundDrawable(
+                    new android.graphics.drawable.ColorDrawable(0x00000000));
+        } catch (Exception e) {
+            // ignore
+        }
+        dlg.show();
+        try {
+            android.view.Window w = dlg.getWindow();
+            int dw = getResources().getDisplayMetrics().widthPixels;
+            int dh = getResources().getDisplayMetrics().heightPixels;
+            int width = (int) (dw * wFrac);
+            if (wFrac < 0.97f && width > dp(480)) {
+                width = dp(480);
+            }
+            int height = hFrac > 0f ? (int) (dh * hFrac)
+                    : android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
+            w.setLayout(width, height);
+            w.setDimAmount(0.55f);
+        } catch (Exception e) {
+            // ignore
+        }
+        return dlg;
+    }
+
+    /** One caption + NumberPicker column for the date dialog. */
+    private LinearLayout pickerColumn(String caption, NumberPicker np) {
+        LinearLayout col = new LinearLayout(this);
+        col.setOrientation(LinearLayout.VERTICAL);
+        col.setGravity(android.view.Gravity.CENTER_HORIZONTAL);
+        TextView cap = new TextView(this);
+        cap.setText(caption);
+        cap.setTextSize(android.util.TypedValue.COMPLEX_UNIT_SP, 12);
+        cap.setTypeface(android.graphics.Typeface.DEFAULT_BOLD);
+        cap.setTextColor(0xFF6B7385);
+        cap.setPadding(0, 0, 0, dp(4));
+        col.addView(cap);
+        col.addView(np);
+        return col;
+    }
+
+    /** Rounded tinted tile used by the Analyze dialog. */
+    private void addStatTile(LinearLayout parent, String label, String value,
+                             String sub, int valueColor) {
+        LinearLayout tile = new LinearLayout(this);
+        tile.setOrientation(LinearLayout.VERTICAL);
+        tile.setBackgroundDrawable(roundRect(0xFFF2F4F8, 12));
+        tile.setPadding(dp(14), dp(10), dp(14), dp(10));
+
+        TextView tl = new TextView(this);
+        tl.setText(label);
+        tl.setTextSize(android.util.TypedValue.COMPLEX_UNIT_SP, 12);
+        tl.setTypeface(android.graphics.Typeface.DEFAULT_BOLD);
+        tl.setTextColor(0xFF6B7385);
+        tile.addView(tl);
+
+        TextView tv = new TextView(this);
+        tv.setText(value);
+        tv.setTextSize(android.util.TypedValue.COMPLEX_UNIT_SP, 22);
+        tv.setTypeface(android.graphics.Typeface.DEFAULT_BOLD);
+        tv.setTextColor(valueColor);
+        tile.addView(tv);
+
+        if (sub != null) {
+            TextView ts = new TextView(this);
+            ts.setText(sub);
+            ts.setTextSize(android.util.TypedValue.COMPLEX_UNIT_SP, 12);
+            ts.setTypeface(android.graphics.Typeface.MONOSPACE);
+            ts.setTextColor(0xFF6B7385);
+            tile.addView(ts);
+        }
+
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+        lp.topMargin = dp(10);
+        parent.addView(tile, lp);
+    }
+
+    /** Graph toggle button: filled blue when on, grey when off. */
+    private void setToggleLook(Button b, boolean on, String name) {
+        b.setText(name + (on ? " On" : " Off"));
+        b.setBackgroundResource(on ? R.drawable.btn_primary : R.drawable.btn_rounded);
+        b.setTextColor(on ? 0xFFFFFFFF : 0xFF1F2430);
+        b.setPadding(dp(4), 0, dp(4), 0);
+    }
+
     private static final String[] MONTH_LABELS = new String[] {
             "JAN", "FEB", "MAR", "APR", "MAY", "JUN",
             "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"
@@ -373,88 +610,66 @@ public class MainActivity extends Activity {
 
         LinearLayout.LayoutParams lp =
                 new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
-        row.addView(npDay, lp);
-        row.addView(npMonth, lp);
-        row.addView(npYear, lp);
+        row.addView(pickerColumn("Day", npDay), lp);
+        row.addView(pickerColumn("Month", npMonth), lp);
+        row.addView(pickerColumn("Year", npYear), lp);
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(isStart ? "Start date" : "End date");
-        builder.setView(row);
-        builder.setNegativeButton("Cancel", null);
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                int y = npYear.getValue();
-                int m = npMonth.getValue();
-                int d = npDay.getValue();
-                int max = daysInMonth(y, m);
-                if (d > max) {
-                    d = max;
-                }
-                Calendar target = isStart ? calStart : calEnd;
-                target.set(Calendar.YEAR, y);
-                target.set(Calendar.MONTH, m);
-                target.set(Calendar.DAY_OF_MONTH, d);
-                target.set(Calendar.HOUR_OF_DAY, 0);
-                target.set(Calendar.MINUTE, 0);
-                target.set(Calendar.SECOND, 0);
-                updateDateFields();
-            }
-        });
-        AlertDialog dateDlg = builder.create();
-        dateDlg.show();
-        styleDialogTitle(dateDlg);
+        showStyledDialog(isStart ? "Start date" : "End date", row,
+                "OK", new Runnable() {
+                    @Override
+                    public void run() {
+                        int y = npYear.getValue();
+                        int m = npMonth.getValue();
+                        int d = npDay.getValue();
+                        int max = daysInMonth(y, m);
+                        if (d > max) {
+                            d = max;
+                        }
+                        Calendar target = isStart ? calStart : calEnd;
+                        target.set(Calendar.YEAR, y);
+                        target.set(Calendar.MONTH, m);
+                        target.set(Calendar.DAY_OF_MONTH, d);
+                        target.set(Calendar.HOUR_OF_DAY, 0);
+                        target.set(Calendar.MINUTE, 0);
+                        target.set(Calendar.SECOND, 0);
+                        updateDateFields();
+                    }
+                },
+                "Cancel", null, true, 0.86f, 0f);
     }
 	
 
     private void showPleaseWait(String message) {
         dismissPleaseWait();
         try {
-            int pad = (int) (16 * getResources().getDisplayMetrics().density);
-
             LinearLayout layout = new LinearLayout(this);
             layout.setOrientation(LinearLayout.VERTICAL);
             layout.setGravity(android.view.Gravity.CENTER_HORIZONTAL);
-            layout.setPadding(pad, pad / 2, pad, pad);
+            layout.setPadding(dp(20), dp(22), dp(20), dp(8));
 
             android.widget.ProgressBar bar =
                     new android.widget.ProgressBar(this);
             LinearLayout.LayoutParams barLp = new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.WRAP_CONTENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT);
+                    dp(48), dp(48));
             barLp.gravity = android.view.Gravity.CENTER_HORIZONTAL;
             layout.addView(bar, barLp);
 
             TextView msgView = new TextView(this);
             msgView.setText(message != null ? message : "");
-            msgView.setTextSize(android.util.TypedValue.COMPLEX_UNIT_SP, 14);
-            msgView.setTextColor(0xFF000000);
-            msgView.setPadding(0, pad / 2, 0, 0);
+            msgView.setTextSize(android.util.TypedValue.COMPLEX_UNIT_SP, 15);
+            msgView.setTextColor(0xFF1F2430);
+            msgView.setPadding(0, dp(14), 0, dp(6));
             msgView.setGravity(android.view.Gravity.CENTER_HORIZONTAL);
             layout.addView(msgView);
 
-            progressDialog = new AlertDialog.Builder(this)
-                    .setTitle("Please wait")
-                    .setView(layout)
-                    .setCancelable(false)
-                    .setNegativeButton("Stop", new DialogInterface.OnClickListener() {
+            progressDialog = showStyledDialog("Please wait", layout,
+                    null, null,
+                    "Stop", new Runnable() {
                         @Override
-                        public void onClick(DialogInterface dialog, int which) {
+                        public void run() {
                             stopCurrentTask();
                         }
-                    })
-                    .create();
-            progressDialog.show();
-            styleDialogTitle(progressDialog);
-            try {
-                android.widget.Button stopBtn =
-                        progressDialog.getButton(AlertDialog.BUTTON_NEGATIVE);
-                if (stopBtn != null) {
-                    stopBtn.setTextSize(android.util.TypedValue.COMPLEX_UNIT_SP, 14);
-                }
-            } catch (Exception e) {
-                // ignore
-            }
+                    }, false, 0.80f, 0f);
         } catch (Exception e) {
             progressDialog = null;
             Toast.makeText(this, message != null ? message : "Please wait...",
@@ -1416,24 +1631,50 @@ public class MainActivity extends Activity {
     }
 
     private void showSearchResultsDialog(final ArrayList<SearchHit> hits) {
-        String[] labels = new String[hits.size()];
-        for (int i = 0; i < hits.size(); i++) {
-            labels[i] = hits.get(i).label;
-        }
+        final Dialog[] holder = new Dialog[1];
 
         android.widget.ListView listView = new android.widget.ListView(this);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-                this,
-                R.layout.spinner_dropdown_item,
-                android.R.id.text1,
-                labels);
-        listView.setAdapter(adapter);
+        listView.setDivider(new android.graphics.drawable.ColorDrawable(0xFFE8EBF2));
+        listView.setDividerHeight(1);
+        listView.setCacheColorHint(0x00000000);
+        listView.setSelector(new android.graphics.drawable.ColorDrawable(0x1F1E88E5));
 
-        final AlertDialog dialog = new AlertDialog.Builder(this)
-                .setTitle("Select code")
-                .setView(listView)
-                .setNegativeButton("Close", null)
-                .create();
+        ArrayAdapter<SearchHit> adapter = new ArrayAdapter<SearchHit>(this, 0, hits) {
+            @Override
+            public View getView(int position, View convertView, android.view.ViewGroup parent) {
+                SearchHit h = getItem(position);
+                LinearLayout rowV = new LinearLayout(MainActivity.this);
+                rowV.setOrientation(LinearLayout.VERTICAL);
+                rowV.setPadding(dp(18), dp(11), dp(18), dp(11));
+
+                TextView sym = new TextView(MainActivity.this);
+                sym.setText(h.symbol);
+                sym.setTextSize(android.util.TypedValue.COMPLEX_UNIT_SP, 17);
+                sym.setTypeface(android.graphics.Typeface.DEFAULT_BOLD);
+                sym.setTextColor(0xFF1A237E);
+                rowV.addView(sym);
+
+                String detail = h.label != null ? h.label : "";
+                int cut = detail.indexOf(" \u2014 ");
+                if (cut >= 0) {
+                    detail = detail.substring(cut + 3);
+                } else if (detail.equals(h.symbol)) {
+                    detail = "";
+                }
+                if (detail.length() > 0) {
+                    TextView det = new TextView(MainActivity.this);
+                    det.setText(detail);
+                    det.setTextSize(android.util.TypedValue.COMPLEX_UNIT_SP, 13);
+                    det.setTextColor(0xFF6B7385);
+                    det.setMaxLines(2);
+                    det.setEllipsize(android.text.TextUtils.TruncateAt.END);
+                    det.setPadding(0, dp(2), 0, 0);
+                    rowV.addView(det);
+                }
+                return rowV;
+            }
+        };
+        listView.setAdapter(adapter);
 
         listView.setOnItemClickListener(new android.widget.AdapterView.OnItemClickListener() {
             @Override
@@ -1443,22 +1684,14 @@ public class MainActivity extends Activity {
                 tvStatus.setText("Selected: " + hit.symbol);
                 Toast.makeText(MainActivity.this,
                         "Share code set to " + hit.symbol, Toast.LENGTH_SHORT).show();
-                dialog.dismiss();
+                if (holder[0] != null) {
+                    holder[0].dismiss();
+                }
             }
         });
 
-        dialog.show();
-        styleDialogTitle(dialog);
-
-        // Ensure button text is readable
-        try {
-            android.widget.Button neg = dialog.getButton(AlertDialog.BUTTON_NEGATIVE);
-            if (neg != null) {
-                neg.setTextSize(android.util.TypedValue.COMPLEX_UNIT_SP, 14);
-            }
-        } catch (Exception e) {
-            // ignore
-        }
+        holder[0] = showStyledDialog("Select code (" + hits.size() + ")", listView,
+                null, null, "Close", null, true, 0.92f, 0f);
     }
 
 
@@ -1590,34 +1823,37 @@ public class MainActivity extends Activity {
             ticker = etTicker.getText().toString().trim();
         }
 
-        String msg =
-                "Ticker: " + ticker + "\n\n"
-                + "# Data (closes): " + nData + "\n"
-                + "# Returns: " + nRet + "\n\n"
-                + "Average daily return:\n  "
-                + String.format(Locale.US, "%.8f", avReturn)
-                + "  (" + String.format(Locale.US, "%.4f%%", avReturn * 100.0) + ")\n\n"
-                + "Std Dev (population):\n  "
-                + String.format(Locale.US, "%.8f", stDev)
-                + "  (" + String.format(Locale.US, "%.4f%%", stDev * 100.0) + ")\n\n"
-                + "Variance (population):\n  "
-                + String.format(Locale.US, "%.10f", vrnc);
+        LinearLayout body = new LinearLayout(this);
+        body.setOrientation(LinearLayout.VERTICAL);
+        body.setPadding(dp(18), dp(14), dp(18), dp(6));
 
-        int pad = (int) (16 * getResources().getDisplayMetrics().density);
+        TextView tvTk = new TextView(this);
+        tvTk.setText(ticker);
+        tvTk.setTextSize(android.util.TypedValue.COMPLEX_UNIT_SP, 24);
+        tvTk.setTypeface(android.graphics.Typeface.DEFAULT_BOLD);
+        tvTk.setTextColor(0xFF1A237E);
+        body.addView(tvTk);
 
-        TextView msgView = new TextView(this);
-        msgView.setText(msg);
-        msgView.setTextSize(android.util.TypedValue.COMPLEX_UNIT_SP, 14);
-        msgView.setPadding(pad, pad / 2, pad, pad);
-        msgView.setTextColor(0xFF000000);
+        TextView tvCnt = new TextView(this);
+        tvCnt.setText(nData + " closes  \u00B7  " + nRet + " returns");
+        tvCnt.setTextSize(android.util.TypedValue.COMPLEX_UNIT_SP, 13);
+        tvCnt.setTextColor(0xFF6B7385);
+        body.addView(tvCnt);
 
-        AlertDialog.Builder b = new AlertDialog.Builder(this);
-        b.setTitle("Analyze");
-        b.setView(msgView);
-        b.setPositiveButton("Close", null);
-        AlertDialog anDlg = b.create();
-        anDlg.show();
-        styleDialogTitle(anDlg);
+        int retColor = avReturn < 0 ? 0xFFC62828 : 0xFF2E7D32;
+        addStatTile(body, "AVERAGE DAILY RETURN",
+                String.format(Locale.US, "%.4f%%", avReturn * 100.0),
+                String.format(Locale.US, "%.8f", avReturn), retColor);
+        addStatTile(body, "STD DEV (POPULATION)",
+                String.format(Locale.US, "%.4f%%", stDev * 100.0),
+                String.format(Locale.US, "%.8f", stDev), 0xFF1F2430);
+        addStatTile(body, "VARIANCE (POPULATION)",
+                String.format(Locale.US, "%.10f", vrnc), null, 0xFF1F2430);
+
+        ScrollView anScroll = new ScrollView(this);
+        anScroll.addView(body);
+        showStyledDialog("Analyze", anScroll, "Close", null, null, null,
+                true, 0.90f, 0f);
     }
 
     private ArrayList<Double> parseClosesFromCsv(String csv) {
@@ -1719,7 +1955,7 @@ public class MainActivity extends Activity {
         int screenW = getResources().getDisplayMetrics().widthPixels;
         int screenH = getResources().getDisplayMetrics().heightPixels;
         // Use almost full width; taller charts for readability
-        int chartW = screenW - (int) (16 * density);
+        int chartW = (int) (screenW * 0.98f) - (int) (16 * density);
         if (chartW < 320) {
             chartW = 320;
         }
@@ -1838,7 +2074,7 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
                 graphShowBB = !graphShowBB;
-                graphBtnBB.setText(graphShowBB ? "BB On" : "BB Off");
+                setToggleLook(graphBtnBB, graphShowBB, "BB");
                 refreshGraphBitmaps();
             }
         });
@@ -1850,7 +2086,7 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
                 graphShowMA = !graphShowMA;
-                graphBtnMA.setText(graphShowMA ? "MA On" : "MA Off");
+                setToggleLook(graphBtnMA, graphShowMA, "MA");
                 refreshGraphBitmaps();
             }
         });
@@ -1862,7 +2098,7 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
                 graphShowRSI = !graphShowRSI;
-                graphBtnRSI.setText(graphShowRSI ? "RSI On" : "RSI Off");
+                setToggleLook(graphBtnRSI, graphShowRSI, "RSI");
                 if (graphTitleRsi != null) {
                     graphTitleRsi.setVisibility(graphShowRSI ? View.VISIBLE : View.GONE);
                 }
@@ -1880,7 +2116,7 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
                 graphShowMACD = !graphShowMACD;
-                graphBtnMACD.setText(graphShowMACD ? "MACD On" : "MACD Off");
+                setToggleLook(graphBtnMACD, graphShowMACD, "MACD");
                 if (graphTitleMacd != null) {
                     graphTitleMacd.setVisibility(graphShowMACD ? View.VISIBLE : View.GONE);
                 }
@@ -1934,24 +2170,8 @@ public class MainActivity extends Activity {
             title = "Graph - " + lastTicker;
         }
 
-        AlertDialog dlg = new AlertDialog.Builder(this)
-                .setTitle(title)
-                .setView(scroll)
-                .setPositiveButton("Close", null)
-                .create();
-        dlg.show();
-        styleDialogTitle(dlg);
-        // Nearly full-screen so charts are easier to read
-        try {
-            android.view.Window w = dlg.getWindow();
-            if (w != null) {
-                int dw = getResources().getDisplayMetrics().widthPixels;
-                int dh = getResources().getDisplayMetrics().heightPixels;
-                w.setLayout((int) (dw * 0.98f), (int) (dh * 0.92f));
-            }
-        } catch (Exception e) {
-            // ignore
-        }
+        showStyledDialog(title, scroll, "Close", null, null, null,
+                true, 0.98f, 0.92f);
     }
 
     private void styleGraphButton(Button btn, String text) {
