@@ -3,7 +3,8 @@
     android:id="@android:id/text1"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:textSize="14sp"
-    android:padding="12dp"
-    android:textColor="#FF000000"
+    android:textSize="15sp"
+    android:padding="14dp"
+    android:textColor="@color/text_primary"
+    android:background="@color/card_bg"
     android:singleLine="true" />
