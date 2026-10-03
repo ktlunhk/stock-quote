@@ -68,6 +68,7 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        FileExporter.ensureWritePermission(this);
         setContentView(R.layout.main);
 
         bindViews();
@@ -431,5 +432,15 @@ public class MainActivity extends Activity {
 
     private void showGraph() {
         new GraphDialog(this, stockData, etTicker.getText().toString().trim()).show();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == FileExporter.REQ_STORAGE) {
+            boolean ok = grantResults.length > 0 && grantResults[0] == 0;
+            Toast.makeText(this, ok ? "Storage permission granted" : "Storage permission denied",
+                    Toast.LENGTH_SHORT).show();
+        }
     }
 }
